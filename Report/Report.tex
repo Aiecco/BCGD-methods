@@ -16,45 +16,45 @@
 \maketitle
 
 \section{Introduction}
+In this report we will analyze the relative performance of various gradient methods at optimizing a multi-class logistic regression model. Specifically, we are interested in comparing full gradient descent with block coordinate based methods (BCGD) which optimize one coordinate, or column in parameter matrix $X$, at a time. 
 Multi-class logistic classification is an extension of traditional logistic regression. The task goes from predicting a Bernoulli random variable to predicting one label to classify each example from a set of $k$ mutually exclusive labels. We encode the target $b_i \in \mathbb{R}^k$ where $k$ is the number of output classes to be a one hot vector, corresponding to the correct classification of example $a_i \in \mathbb{R}^d$. It assigns these labels by learning the conditional probability distribution that the correct label is $b_i$ given example $a_i$ and learned parameter matrix $X \in \mathbb{R}^{d \times k}$ Where $d$ is the number of features in each example. The output distribution is computed with the softmax function in this context: 
 $$p(b_i|a_i, X) = \frac{\exp(x_{b_i}^T a_i)}{\sum_{c=1}^k\exp(x_c^Ta_i)}$$
 Multi-class logistic regression is a simple yet effective method with ubiquitous use. Its training does, however, require learning the parameter matrix $X$, which can be done using various methods like maximum likelihood or gradient descent based methods. This corresponds to solving the following optimization problem:
 $$\min_{x\in\mathbb{R}^{d\times k}} \sum\limits_{i=1}^{m}[-x^T_{b_i}a_{i}+ \log(\sum\limits_{c=1}^k\exp(x_c^{T}a_i))]$$
-which is the cross-entropy of the predicted class distribution and the target label $b_i$.  
-In this report we will analyze the relative performance of various gradient methods at solving this problem. Specifically, we are interested in comparing full gradient descent with block coordinate based methods (BCGD) which optimize one coordinate, or column in parameter matrix $X$, at a time.
+which is the cross-entropy of the predicted class distribution and the target label $b_i$. Of importance to the application of gradient methods is this problems convexity. This is nice for many reasons, but most importantly we can guarantee that a local minima found by GD methods will be the global minimum.
+
 \section{Algorithms}
-test
+Here we provide an overview to the methods studied. We implemented the various methods in python using either pyTorch or Numpy. The three algorithms studied are full gradient descent and two BCGD methods using both Gauss-Southwell and randomized rule.  
 \subsection{Gradient Descent}
 \begin{algorithm}
 \caption{Full Gradient Descent}\label{alg:cap}
 \begin{algorithmic}
-\State Initialize $X \in \mathbb{R}^{d\times k}$
+\State Initialize $X_1 \in \mathbb{R}^{d\times k}$
 \For{$k = 1,... $}
     \State If $X \in X^*$ \textbf{STOP} (Optimality conditions)
     \State Set $X_{k+1} = x_k - \alpha_{k}\nabla$
-    \State $N \gets \frac{N}{2}$  \Comment{This is a comment}
 \EndFor
 \end{algorithmic}
 \end{algorithm}
 
 \subsection{Block coordinate Gradient Descent}
+BCGD methods are specialized in optimizing high dimensional problems where where calculation of the gradient can be split up in to blocks which are easier to compute. These methods exploit the convex nature of the problem to optimize one coordinate at a time and approach the global optimum.
 \begin{algorithm}
-\caption{An algorithm with caption}\label{alg:cap}
+\caption{BCGD}\label{alg:cap}
 \begin{algorithmic}
-\Require $n \geq 0$
-\Ensure $y = x^n$
-\State $y \gets 1$
-\State $X \gets x$
-\State $N \gets n$
-\While{$N \neq 0$}
-\If{$N$ is even}
-    \State $X \gets X \times X$
-    \State $N \gets \frac{N}{2}$  \Comment{This is a comment}
-\ElsIf{$N$ is odd}
-    \State $y \gets y \times X$
-    \State $N \gets N - 1$
-\EndIf
-\EndWhile
+\State Initialize $X_1 \in \mathbb{R}^{d\times k}$
+\For{$k = 1,... $}
+    \State If $X \in X^*$ \textbf{STOP} (Optimality conditions)
+    \State Select $i_k \in $ block according to some \textbf{RULE}
+    \State Set $x_{k+1} = x_k - \alpha_k[\nabla_x f(x_k)]_{i_k}$
+\EndFor
 \end{algorithmic}
 \end{algorithm}
+Above $\alpha_k \geq 0$ is a stepsize for the $k$th iteration. For most of our analysis we fix $\alpha_k = \frac{1}{L}$, but experiment with the effect of different choices in the Stepsize Analysis subsection of the Synthetic Dataset section. The choice of \textbf{RULE} will distinguish the Gauss-Southwell and Randomized variants of BCGD. 
+
+\section{Synthetic Dataset}
+\subsection{Creation}
+\subsection{Performance}
+\subsection{Stepsize Analysis}
+\section{Real-world Dataset}
 \end{document}
