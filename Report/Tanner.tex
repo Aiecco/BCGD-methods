@@ -1,0 +1,60 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+
+\title{ODS-24 sratch}
+\author{Tanner Aaron Graves}
+\date{May 2024}
+
+\begin{document}
+
+
+\maketitle
+
+\section{Introduction}
+Multi-class logistic classification is an extension of traditional logistic regression. The task goes from predicting a Bernoulli random variable to predicting one label to classify each example from a set of $k$ mutually exclusive labels. We encode the target $b_i \in \mathbb{R}^k$ where $k$ is the number of output classes to be a one hot vector, corresponding to the correct classification of example $a_i \in \mathbb{R}^d$. It assigns these labels by learning the conditional probability distribution that the correct label is $b_i$ given example $a_i$ and learned parameter matrix $X \in \mathbb{R}^{d \times k}$ Where $d$ is the number of features in each example. The output distribution is computed with the softmax function in this context: 
+$$p(b_i|a_i, X) = \frac{\exp(x_{b_i}^T a_i)}{\sum_{c=1}^k\exp(x_c^Ta_i)}$$
+Multi-class logistic regression is a simple yet effective method with ubiquitous use. Its training does, however, require learning the parameter matrix $X$, which can be done using various methods like maximum likelihood or gradient descent based methods. This corresponds to solving the following optimization problem:
+$$\min_{x\in\mathbb{R}^{d\times k}} \sum\limits_{i=1}^{m}[-x^T_{b_i}a_{i}+ \log(\sum\limits_{c=1}^k\exp(x_c^{T}a_i))]$$
+which is the cross-entropy of the predicted class distribution and the target label $b_i$.  
+In this report we will analyze the relative performance of various gradient methods at solving this problem. Specifically, we are interested in comparing full gradient descent with block coordinate based methods (BCGD) which optimize one coordinate, or column in parameter matrix $X$, at a time.
+\section{Algorithms}
+test
+\subsection{Gradient Descent}
+\begin{algorithm}
+\caption{Full Gradient Descent}\label{alg:cap}
+\begin{algorithmic}
+\State Initialize $X \in \mathbb{R}^{d\times k}$
+\For{$k = 1,... $}
+    \State If $X \in X^*$ \textbf{STOP} (Optimality conditions)
+    \State Set $X_{k+1} = x_k - \alpha_{k}\nabla$
+    \State $N \gets \frac{N}{2}$  \Comment{This is a comment}
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Block coordinate Gradient Descent}
+\begin{algorithm}
+\caption{An algorithm with caption}\label{alg:cap}
+\begin{algorithmic}
+\Require $n \geq 0$
+\Ensure $y = x^n$
+\State $y \gets 1$
+\State $X \gets x$
+\State $N \gets n$
+\While{$N \neq 0$}
+\If{$N$ is even}
+    \State $X \gets X \times X$
+    \State $N \gets \frac{N}{2}$  \Comment{This is a comment}
+\ElsIf{$N$ is odd}
+    \State $y \gets y \times X$
+    \State $N \gets N - 1$
+\EndIf
+\EndWhile
+\end{algorithmic}
+\end{algorithm}
+\end{document}
