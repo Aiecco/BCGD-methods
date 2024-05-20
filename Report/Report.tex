@@ -56,10 +56,11 @@ BCGD methods are specialized in optimizing high dimensional problems where where
 \EndFor
 \end{algorithmic}
 \end{algorithm}
-Above $\alpha_k \geq 0$ is a stepsize for the $k$th iteration. We later analize the effect of different methods for calculating this. The choice of \textbf{RULE} will distinguish the Gauss-Southwell and Randomized variants of BCGD. For the GS rule we compute 
+Above $\alpha_k \geq 0$ is a stepsize for the $k$th iteration. We later analize the effect of different methods for calculating this. The choice of \textbf{RULE} will distinguish the Gauss-Southwell and Randomized variants of BCGD. The Gauss-Southwell (GS) rule is a greedy selection method that focuses on the block with the largest gradient component at each iteration. This method involves computing the gradient of the objective function for all blocks and selecting the one with the maximum gradient norm. By updating the block that is expected to provide the greatest improvement in the objective function, the GS rule can lead to faster convergence, especially in problems where gradients vary significantly across blocks. However, the computational cost is higher due to the need to evaluate the full gradient at each step, making this approach more complex and potentially less efficient for high-dimensional problems.
+For the GS rule we compute 
 $$i_k = {\arg\max}_j ||\nabla_j f(x_k)||$$
-This has the notable disadvantage of requiring computation of the full gradient.
-Taking $i_k$ uniform random samples to be the block index give the randomized rule. 
+Taking $i_k$ uniform random samples to be the block index give the randomized rule. This method simplifies the implementation and reduces computational cost, as it only requires computing the gradient of the randomly selected block rather than the full gradient
+ 
 
 \section{Synthetic Dataset}
 To initially very the convergence of our algorithms we create a high-dimensional dataset for the multi-class classification problem. This consists of our data matrix $A\in\mathbb{R}^{1000\times1000}$ and target classes $b$. The rows of $A$ correspond individual examples in the dataset and the columns their numeric features. Entries for $A$ were drawn i.i.d. from a $N(0,1)$ distribution. Here $b\in\mathbb{Z}_{50}$ represents the vector of target classes corresponding to their respective rows in $A$. We define our starting parameter matrix $X\in\mathbb{R}^{1000\times50}$. We can then define a error matrix with standard normal entries to inject noise into our calculation of the target classes
