@@ -5,9 +5,15 @@
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
+\usepackage{authblk}
 
-\title{ODS-24 sratch}
-\author{Tanner Aaron Graves}
+\title{Gradient Methods for Muli-class Logistic Regression}
+\author{Alessandro Pala - 2107800 \and 
+Tanner Aaron Graves - 2073559\and 
+Alisa Snezskaia - 2107497\and
+Anna Glado - ######}
+
+%\affil{Optimazation for DataScience, UniPD}
 \date{May 2024}
 
 \begin{document}
@@ -50,10 +56,15 @@ BCGD methods are specialized in optimizing high dimensional problems where where
 \EndFor
 \end{algorithmic}
 \end{algorithm}
-Above $\alpha_k \geq 0$ is a stepsize for the $k$th iteration. For most of our analysis we fix $\alpha_k = \frac{1}{L}$, but experiment with the effect of different choices in the Stepsize Analysis subsection of the Synthetic Dataset section. The choice of \textbf{RULE} will distinguish the Gauss-Southwell and Randomized variants of BCGD. 
+Above $\alpha_k \geq 0$ is a stepsize for the $k$th iteration. We later analize the effect of different methods for calculating this. The choice of \textbf{RULE} will distinguish the Gauss-Southwell and Randomized variants of BCGD. For the GS rule we compute 
+$$i_k = {\arg\max}_j ||\nabla_j f(x_k)||$$
+This has the notable disadvantage of requiring computation of the full gradient.
+Taking $i_k$ uniform random samples to be the block index give the randomized rule. 
 
 \section{Synthetic Dataset}
-\subsection{Creation}
+To initially very the convergence of our algorithms we create a high-dimensional dataset for the multi-class classification problem. This consists of our data matrix $A\in\mathbb{R}^{1000\times1000}$ and target classes $b$. The rows of $A$ correspond individual examples in the dataset and the columns their numeric features. Entries for $A$ were drawn i.i.d. from a $N(0,1)$ distribution. Here $b\in\mathbb{Z}_{50}$ represents the vector of target classes corresponding to their respective rows in $A$. We define our starting parameter matrix $X\in\mathbb{R}^{1000\times50}$. We can then define a error matrix with standard normal entries to inject noise into our calculation of the target classes
+$$b = AX + E$$
+and further process $b$ to be the argmax of each row. This dataset has the feature of having an expensive gradient calculation due to the high number of features and output classes. This creates the potential for BCGD methods to be advantaged as ones like randomized rule may compute a smaller block of the gradient.
 \subsection{Performance}
 \subsection{Stepsize Analysis}
 \section{Real-world Dataset}
