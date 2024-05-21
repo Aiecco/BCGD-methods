@@ -109,8 +109,14 @@ We initially took an empirical approach to approximating $L$ by noting that our 
 \end{figure}
 We moved away from this empirical estimation of $L$ to a more common one in the context of gradient methods: using the maximum eigen-value of the Forbenius-norm of the data matrix $A$.
 $$L\approx\max\{|\lambda_i|\} \text{ Where } \lambda_i \text{ is an eigen-value of }||A||_F^2 = A^TA$$
+This approach provides reliable and easy to compute estimation of $L$.
 \subsection{Block Step Size}
+When calculating the stepsize for each block, Block Step size is taken the be the inverse of the 2-norm of the blocks.
+$$\alpha_{ki} = \frac{1}{||A_i||_2}$$
+\begin{comment}
 \subsection{Exact Step Size}
+We additionally test a psudo-exact stepsize. Typically calculated by $\frac{1}{L}$, we create an approximation using the inverse of the diagonal elements of $A^TA$.
+\end{comment}
 
 \section{Synthetic Dataset}
 To initially validate the convergence of our algorithms we generate a high-dimensional dataset for the multi-class classification problem. This consists of our data matrix $A \in \mathbb{R}^{1000 \times 1000}$ and target classes $b$. The rows of $A$ correspond to individual examples in the dataset and the columns their numeric features. Entries for $A$ were drawn i.i.d. from a $N(0,1)$ distribution. Here $b \in \mathbb{Z}_{50}$ represents the vector of target classes corresponding to their respective rows in $A$. We define our starting parameter matrix $X \in \mathbb{R}^{1000 \times 50}$. We can then define an error matrix with standard normal entries to inject noise into our calculation of the target classes
