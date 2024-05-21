@@ -16,7 +16,7 @@
 \author{Alessandro Pala - 2107800 \and 
 Tanner Aaron Graves - 2073559 \and 
 Alisa Snezskaia - 2107497 \and
-Anna Glado - }
+Anna Glado - 2122285}
 
 %\affil{Optimization for DataScience, UniPD}
 \date{May 2024}
@@ -75,6 +75,7 @@ $$i_k = {\arg\max}_j ||\nabla_j f(x_k)||$$
 Taking $i_k$ uniform random samples to be the block index gives the randomized rule. This method simplifies the implementation and reduces computational cost, as it only requires computing the gradient of the randomly selected block rather than the full gradient.
 
 \section{Step Sizes}
+Here we introduce various methods for determining step size $\alpha_k$. The relative performance of these will be discussed in the later dataset sections. 
 The more theoretical formulations for block coordinate descent methods use line searching to find an optimal point in the direction of the current gradient block. This does well to minimize the number of iterations for convergence by exploiting the convexity of the logistic classification problem. Should the cost cease to decrease over this line search, then a minima has been found on the line, and thus a block has been minimized. Here we visualize the loss over the line search along a gradient block selected at an iteration of BCGD with GS rule with varying step sizes on the synthetic dataset (Figure 1).  
 \begin{figure}
     \centering
@@ -82,7 +83,7 @@ The more theoretical formulations for block coordinate descent methods use line 
     \caption{Linesearch over one block}
     \label{fig:linesearch}
 \end{figure}
-In practice, computing he loss at many different points along this line to find the optimal step is a very expensive operation for large datasets. We found that implementing this method proved far too costly
+In practice, computing he loss at many different points along this line to find the optimal step is a very expensive operation for large datasets. This method is far too impractical for application here. However, we have implemented it to study how the optimal stepsize changes in relation to iteration number.
 \subsection{Fixed Step Size and the Lipschitz Constant}
 Using the inverse of the Lipschitz constant is commonly used in gradient based methods as it guarantees stability. This exploits an assumption we may make about our convex problem to define the a Lipschitz constant $L$, which may be used to ensure that iterations do not overstep minima leading to divergence. It is defined for $x,y$ in the feasible parameter space:
 $$L = \max_{x,y} \frac{||\nabla y - \nabla x||_2}{||x - y||_2}$$
@@ -107,8 +108,7 @@ We initially took an empirical approach to approximating $L$ by noting that our 
     \label{fig:side_by_side}
 \end{figure}
 We moved away from this empirical estimation of $L$ to a more common one in the context of gradient methods: using the maximum eigen-value of the Forbenius-norm of the data matrix $A$.
-$$L\approx\max\{|\lambda_i|\} \text{ Where } \lambda_i is an eigen-value of ||A||_F = A^TA$$
-
+$$L\approx\max\{|\lambda_i|\} \text{ Where } \lambda_i \text{ is an eigen-value of }||A||_F^2 = A^TA$$
 \subsection{Block Step Size}
 \subsection{Exact Step Size}
 
@@ -145,7 +145,7 @@ We also find that the performances of the algorithms remain the same for the oth
     \label{fig:synthetic_exact}
 \end{figure}
 
-All step sizes increase indefinitely during descent at roughly the same rate, and all resemble step functions. -- Is this expected? What does it mean? --
+Step sizes of the adaptive strategies can be seen
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{"C:/Users/alepa/Downloads/Plots/Synthetic_Step_Sizes.png"}
