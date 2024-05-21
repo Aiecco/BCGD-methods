@@ -101,7 +101,7 @@ We initially took an empirical approach to approximating $L$ by noting that our 
     \begin{subfigure}[b]{0.45\linewidth}  % Slightly reduce the width
         \centering
         \includegraphics[width=\linewidth]{iter_vs_stepsize.png}
-        \caption{Enter Caption}
+        \caption{Linesearch stepsize vs iteration}
         \label{fig:enter-label}
     \end{subfigure}
     \caption{Side-by-side comparison of figures}
@@ -151,7 +151,6 @@ We also find that the performances of the algorithms remain the same for the oth
     \label{fig:synthetic_exact}
 \end{figure}
 
-Step sizes of the adaptive strategies can be seen
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{"C:/Users/alepa/Downloads/Plots/Synthetic_Step_Sizes.png"}
@@ -190,12 +189,7 @@ The MNIST dataset is a large collection of 70,000 labeled handwritten digits in 
     \label{fig:mnist_comparison}
 \end{figure}
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\linewidth]{"C:/Users/alepa/Downloads/Plots/MNIST_Step_sizes.png"}
-    \caption{MNIST Dataset - Various Step Sizes}
-    \label{fig:mnist_step_sizes}
-\end{figure}
+We find that the Block stepsize outperforms fixed stepsizes, in that they converge in considerable less CPU time than fixed stepsizes. However, the amount of noise observed in the accuracy curves would indicate that inverse of block magnitude is not a good approximation of the Lipschitz constant. There is indeed a wide range of values for stepsizes for which the model will converge much faster than using an approximation of $L$, but will exhibit a great deal of noise. Adaptive methods which incoperate inforamtion about the magnitue of the gradient or parameter history,  
 
 \begin{comment}
 \section{Real-world Sparse Dataset}
@@ -231,4 +225,14 @@ We selected the MNIST dataset for our first real-world, publicly available datas
 \end{figure}
 \end{comment}
 
+\subsection{Baseline comparison}
+In order to verify the some what unexpected behavior observed in the pytorch model, we re-implemented basic versions of the algorithims using numpy. In this model we experimentally find a stpesize to share between models that does not cause too much instability $\alpha_k = 1.5$.
+What we observe is that the two classes of models - full gradient and BCGD methods are fairly close with the same step size, with BCGD methods taking only slightly longer to converge.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{alt_model MNIST ACC curve.png}
+    \caption{Accuracy - CPU time curves for MNIST with Numpy Model}
+    \label{fig:np_MNIST}
+\end{figure}
+As this pattern is consistent with the previous implementation, we suspect that the nature of the MNIST dataset is responsible for the under-performance of BCGD. With a theoretical understanding of these methods we would expect that randomized BCGD to be advantaged in earlier iterations due to an inexpensive gradient calculation. The MNIST dataset having $784$ features, many of which being important for the task of classification. The result is a problem that is not sparse, meaning that many of the features need to be optimized for good performance. We expect BCGD methods to perform well when individual features contain more information about the classification class. Perhaps with fewer output classes, like 3 or 4, and there was not so many features that are almost 0 (the peripheral of the image), this task would be simpler to the point that randomized BCGD could keep pace with full gradient descent.
 \end{document}
